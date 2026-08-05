@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مفاجأة عيد ميلاد | Birthday Surprise</title>
+    
+    <!-- Typography: Cairo Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons: Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor" id="custom-cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-glow"></div>
+    </div>
+    
+    <!-- Background Environment (Galaxy / Stars / Nebula) -->
+    <canvas id="galaxy-canvas"></canvas>
+    
+    <!-- Overlay for Transitions -->
+    <div id="screen-flash" class="flash-overlay"></div>
+
+    <!-- Main Application Container -->
+    <main class="app-container">
+        
+        <!-- ==========================================
+             SCENE 1: INTRO
+        =========================================== -->
+        <section id="scene-intro" class="scene active-scene">
+            <div class="intro-wrapper">
+                <!-- Moon Element -->
+                <div class="moon-container">
+                    <div class="moon"></div>
+                    <div class="moon-glow"></div>
+                </div>
+                
+                <!-- Typing Text Container -->
+                <div class="text-container">
+                    <h1 class="typing-title" id="intro-title"></h1>
+                    <div class="typing-subtitle" id="intro-subtitle"></div>
+                </div>
+
+                <!-- Action Button -->
+                <button id="btn-open-surprise" class="premium-btn glass-btn hidden">
+                    <span class="btn-text">✨ افتح المفاجأة</span>
+                    <span class="btn-glow"></span>
+                    <span class="btn-particles"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SCENE 2: CAKE & WISH
+        =========================================== -->
+        <section id="scene-cake" class="scene">
+            <div class="instruction-box glass-panel">
+                <h2>🎂 تمنى أمنية...</h2>
+                <p>ثم انفخ لإطفاء الشموع (أو اضغط عليها)</p>
+                <!-- Microphone permission hint -->
+                <small class="mic-hint"><i class="fas fa-microphone"></i> يدعم النفخ عبر الميكروفون</small>
+            </div>
+            
+            <div class="cake-stage">
+                <!-- Realistic Shadows -->
+                <div class="cake-shadow"></div>
+                
+                <div class="plate">
+                    <div class="plate-inner"></div>
+                </div>
+                
+                <div class="cake">
+                    <!-- Layer 1: Bottom -->
+                    <div class="cake-layer bottom-layer">
+                        <div class="drip"></div>
+                    </div>
+                    <!-- Layer 2: Middle -->
+                    <div class="cake-layer middle-layer">
+                        <div class="drip"></div>
+                    </div>
+                    <!-- Layer 3: Top -->
+                    <div class="cake-layer top-layer">
+                        <div class="icing"></div>
+                        <div class="sprinkles-container"></div>
+                        <div class="cherry"></div>
+                    </div>
+                    
+                    <!-- Candles Container -->
+                    <div class="candles-container">
+                        <!-- 5 Interactive Candles -->
+                        <div class="candle" data-id="1">
+                            <div class="wax"></div>
+                            <div class="wick"></div>
+                            <div class="flame">
+                                <div class="flame-glow"></div>
+                            </div>
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle" data-id="2">
+                            <div class="wax"></div>
+                            <div class="wick"></div>
+                            <div class="flame">
+                                <div class="flame-glow"></div>
+                            </div>
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle" data-id="3">
+                            <div class="wax center-candle"></div>
+                            <div class="wick"></div>
+                            <div class="flame">
+                                <div class="flame-glow"></div>
+                            </div>
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle" data-id="4">
+                            <div class="wax"></div>
+                            <div class="wick"></div>
+                            <div class="flame">
+                                <div class="flame-glow"></div>
+                            </div>
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle" data-id="5">
+                            <div class="wax"></div>
+                            <div class="wick"></div>
+                            <div class="flame">
+                                <div class="flame-glow"></div>
+                            </div>
+                            <div class="smoke"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SCENE 3: CELEBRATION (Fireworks Canvas)
+        =========================================== -->
+        <canvas id="fireworks-canvas" class="scene"></canvas>
+
+        <!-- ==========================================
+             SCENE 4: ROMANTIC MESSAGE
+        =========================================== -->
+        <section id="scene-message" class="scene">
+            <div class="message-card glass-panel neumorphic">
+                <div class="message-content">
+                    <p class="msg-line icon-line">🎉</p>
+                    <h2 class="msg-line highlight">كل عام وأنت أجمل هدية في حياتي ❤️</h2>
+                    <p class="msg-line">في هذا اليوم الجميل...</p>
+                    <p class="msg-line">أتمنى أن يملأ الله قلبك بالسعادة.</p>
+                    <p class="msg-line">وأن يحقق لك كل أحلامك.</p>
+                    <p class="msg-line">ويحفظ ابتسامتك دائمًا.</p>
+                    <p class="msg-line">وجودك في حياتي هو أجمل نعمة.</p>
+                    <p class="msg-line">شكراً لأنك تجعل أيامي أجمل.</p>
+                    <h3 class="msg-line highlight">كل عام وأنت بخير يا أغلى إنسان.</h3>
+                    <p class="msg-line icon-line">❤️</p>
+                </div>
+                <button id="btn-to-gallery" class="premium-btn text-btn hidden">
+                    شاهد ذكرياتنا <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SCENE 5: PHOTO GALLERY
+        =========================================== -->
+        <section id="scene-gallery" class="scene">
+    <h2 class="gallery-title">لحظات لا تُنسى ✨</h2>
+    <div class="gallery-grid">
+        <!-- Gallery Item 1 -->
+        <div class="gallery-card glass-panel">
+            <div class="img-wrapper">
+                <img src="assets/images/photo1.png" alt="Memory 1">
+                <div class="card-reflection"></div>
+            </div>
+            <div class="caption">أجمل لحظاتنا</div>
+        </div>
+        <!-- Gallery Item 2 -->
+        <div class="gallery-card glass-panel">
+            <div class="img-wrapper">
+                <img src="assets/images/photo2.png" alt="Memory 2">
+                <div class="card-reflection"></div>
+            </div>
+            <div class="caption">ابتسامتك دائمًا</div>
+        </div>
+        <!-- Gallery Item 3 -->
+        <div class="gallery-card glass-panel">
+            <div class="img-wrapper">
+                <img src="assets/images/photo3.png" alt="Memory 3">
+                <div class="card-reflection"></div>
+            </div>
+            <div class="caption">رحلتنا معًا</div>
+        </div>
+        <!-- Gallery Item 4 -->
+        <div class="gallery-card glass-panel">
+            <div class="img-wrapper">
+                <img src="assets/images/photo4.png" alt="Memory 4">
+                <div class="card-reflection"></div>
+            </div>
+            <div class="caption">ذكرياتنا الجميلة</div>
+        </div>
+    </div>
+    <button id="btn-to-final" class="premium-btn text-btn mt-large">
+        إلى النهاية <i class="fas fa-heart"></i>
+    </button>
+</section>
+
+        <!-- ==========================================
+             SCENE 6: FINAL
+        =========================================== -->
+        <section id="scene-final" class="scene">
+            <div class="final-wrapper">
+                <div class="huge-heart-container">
+                    <i class="fas fa-heart huge-heart"></i>
+                    <div class="heart-pulse-ring"></div>
+                </div>
+                
+                <button id="btn-restart" class="premium-btn glass-btn">
+                    <i class="fas fa-redo"></i> أعد الاحتفال ❤️
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Audio Controls (Hidden by default, used for interaction requirements) -->
+    <button id="audio-toggle" class="glass-btn icon-only">
+        <i class="fas fa-volume-up"></i>
+    </button>
+
+    <!-- ==========================================
+         EXTERNAL LIBRARIES
+    =========================================== -->
+    <!-- GSAP Core & Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    
+    <!-- Canvas Confetti (Disney Magic effects) -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Howler.js (Audio Manager) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+
+    <!-- Application Script -->
+    <script src="script.js"></script>
+</body>
+</html>
