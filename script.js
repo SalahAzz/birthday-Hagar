@@ -1,10 +1,3 @@
-/**
- * ==================================================
- * BIRTHDAY SURPRISE - COMPLETE STANDALONE SCRIPT
- * Integrated Web Audio API Synthesizer + Background Song Support
- * ==================================================
- */
-
 document.addEventListener("DOMContentLoaded", () => {
     gsap.registerPlugin(TextPlugin);
 
@@ -17,12 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
             intro: document.getElementById('scene-intro'),
             cake: document.getElementById('scene-cake'),
             message: document.getElementById('scene-message'),
-            gallery: document.getElementById('scene-gallery'),
             final: document.getElementById('scene-final')
         },
         buttons: {
             open: document.getElementById('btn-open-surprise'),
-            toGallery: document.getElementById('btn-to-gallery'),
             toFinal: document.getElementById('btn-to-final'),
             restart: document.getElementById('btn-restart'),
             audioToggle: document.getElementById('audio-toggle')
@@ -46,10 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
         isTransitioning: false
     };
 
-    /* ==================================================
-       BACKGROUND SONG & AUDIO SYSTEM
-    ================================================== */
-    // إنشاء مشغل الأغنية الخلفية من مجلد assets/music/
     const bgMusic = new Audio('assets/music/romantic-bg.mp3');
     bgMusic.loop = true;
     bgMusic.volume = 0.4;
@@ -83,18 +70,18 @@ document.addEventListener("DOMContentLoaded", () => {
         playMagic() {
             if (!appState.audioEnabled) return;
             this.init();
-            const notes = [523.25, 659.25, 783.99, 1046.50];
+            const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
             notes.forEach((freq, index) => {
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, this.ctx.currentTime + index * 0.1);
-                gain.gain.setValueAtTime(0.15, this.ctx.currentTime + index * 0.1);
-                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + index * 0.1 + 0.6);
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime + index * 0.08);
+                gain.gain.setValueAtTime(0.12, this.ctx.currentTime + index * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + index * 0.08 + 0.5);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
-                osc.start(this.ctx.currentTime + index * 0.1);
-                osc.stop(this.ctx.currentTime + index * 0.1 + 0.6);
+                osc.start(this.ctx.currentTime + index * 0.08);
+                osc.stop(this.ctx.currentTime + index * 0.08 + 0.5);
             });
         },
         playBlow() {
@@ -129,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const gain = this.ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(400, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.03, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.02, this.ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.03);
             osc.connect(gain);
             gain.connect(this.ctx.destination);
@@ -144,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (appState.audioEnabled) {
             SynthAudio.init();
-            bgMusic.play().catch(e => console.log("Audio play blocked by browser policy until interaction."));
+            bgMusic.play().catch(e => console.log("Audio play blocked"));
             icon.className = 'fas fa-volume-up';
         } else {
             bgMusic.pause();
@@ -163,9 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     document.addEventListener('click', initAudio);
 
-    /* ==================================================
-       CUSTOM CURSOR
-    ================================================== */
+    // Custom Magical Cursor with Particle Trail
     if (window.matchMedia("(pointer: fine)").matches) {
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
@@ -173,8 +158,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let cursorY = mouseY;
 
         const renderCursor = () => {
-            cursorX += (mouseX - cursorX) * 0.15;
-            cursorY += (mouseY - cursorY) * 0.15;
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
             DOM.cursor.main.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
             DOM.cursor.glow.style.transform = `translate(${cursorX - mouseX}px, ${cursorY - mouseY}px)`;
             requestAnimationFrame(renderCursor);
@@ -192,13 +177,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* ==================================================
-       GALAXY BACKGROUND
-    ================================================== */
+    // Fantasy Dreamy Environment (Sakura Petals, Butterflies, Magic Dust, Sparkles)
     const canvas = document.getElementById('galaxy-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
-    let stars = [];
+    let particles = [];
 
     const resizeCanvas = () => {
         width = window.innerWidth;
@@ -207,62 +190,80 @@ document.addEventListener("DOMContentLoaded", () => {
         canvas.height = height;
     };
 
-    class Star {
+    class DreamParticle {
         constructor() {
             this.reset();
         }
         reset() {
             this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.z = Math.random() * 2;
-            this.radius = Math.random() * 1.5 + 0.5;
-            this.alpha = Math.random();
-            this.fadeSpeed = Math.random() * 0.02 + 0.005;
-            this.fadingIn = Math.random() > 0.5;
+            this.y = Math.random() * height + height;
+            this.size = Math.random() * 4 + 2;
+            this.speedY = Math.random() * 0.8 + 0.3;
+            this.speedX = Math.sin(Math.random() * Math.PI) * 0.5;
+            this.rotation = Math.random() * 360;
+            this.rotSpeed = Math.random() * 2 - 1;
+            this.alpha = Math.random() * 0.7 + 0.3;
+            this.type = Math.random() > 0.4 ? 'petal' : (Math.random() > 0.5 ? 'sparkle' : 'heart');
+            this.color = ['#ffb199', '#ff758c', '#ffd1dc', '#ffffff', '#e8a5c8'][Math.floor(Math.random() * 5)];
         }
         update(speedMult = 1) {
-            if (this.fadingIn) {
-                this.alpha += this.fadeSpeed;
-                if (this.alpha >= 1) this.fadingIn = false;
-            } else {
-                this.alpha -= this.fadeSpeed;
-                if (this.alpha <= 0.1) this.fadingIn = true;
+            this.y -= this.speedY * speedMult;
+            this.x += Math.sin(this.y * 0.01) * 0.6 + this.speedX;
+            this.rotation += this.rotSpeed;
+            if (this.y < -20) {
+                this.y = height + 20;
+                this.x = Math.random() * width;
             }
-            this.y -= (0.2 * this.z * speedMult);
-            if (this.y < 0) this.y = height;
         }
         draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-            ctx.fill();
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate((this.rotation * Math.PI) / 180);
+            ctx.globalAlpha = this.alpha;
+
+            if (this.type === 'petal') {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (this.type === 'heart') {
+                ctx.fillStyle = this.color;
+                ctx.font = `${this.size * 3}px sans-serif`;
+                ctx.fillText('❤', 0, 0);
+            } else {
+                ctx.fillStyle = '#fff';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
         }
     }
 
-    const initGalaxy = () => {
+    const initEnvironment = () => {
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
-        for (let i = 0; i < 200; i++) {
-            stars.push(new Star());
+        for (let i = 0; i < 120; i++) {
+            particles.push(new DreamParticle());
         }
-        animateGalaxy();
+        animateEnvironment();
     };
 
-    const animateGalaxy = () => {
+    const animateEnvironment = () => {
         ctx.clearRect(0, 0, width, height);
-        const speed = appState.isTransitioning ? 5 : 1;
-        stars.forEach(star => {
-            star.update(speed);
-            star.draw();
+        const speed = appState.isTransitioning ? 3 : 1;
+        particles.forEach(p => {
+            p.update(speed);
+            p.draw();
         });
-        requestAnimationFrame(animateGalaxy);
+        requestAnimationFrame(animateEnvironment);
     };
 
-    initGalaxy();
+    initEnvironment();
 
-    /* ==================================================
-       SCENE MANAGER
-    ================================================== */
+    // Scene Manager with Smooth GSAP Transitions
     const switchScene = (from, to, callback) => {
         if (appState.isTransitioning) return;
         appState.isTransitioning = true;
@@ -270,43 +271,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const tl = gsap.timeline({
             onComplete: () => {
-                from.classList.remove('active-scene');
+                if(from && from !== document.createElement('div')) {
+                    from.classList.remove('active-scene');
+                }
                 to.classList.add('active-scene');
                 appState.isTransitioning = false;
                 if(callback) callback();
             }
         });
 
-        tl.to(from, { opacity: 0, scale: 0.9, duration: 1, ease: "power2.inOut" })
-          .set(to, { opacity: 0, scale: 1.1 })
-          .to(to, { opacity: 1, scale: 1, duration: 1, ease: "power2.out" }, "+=0.2");
+        if (from && from !== document.createElement('div')) {
+            tl.to(from, { opacity: 0, scale: 0.92, duration: 0.8, ease: "power2.inOut" });
+        }
+        tl.set(to, { opacity: 0, scale: 1.08 })
+          .to(to, { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" }, "+=0.1");
     };
 
-    /* ==================================================
-       INTRO ANIMATION
-    ================================================== */
+    // Intro Typing Animation
     const playIntro = () => {
         const tl = gsap.timeline();
 
         tl.to(DOM.intro.title, {
-            duration: 2.5,
-            text: "لدي مفاجأة جميلة لك...",
+            duration: 2.2,
+            text: "لدي مفاجأة ساحرة لكِ يا ندى...",
             ease: "none",
             onUpdate: () => { if(Math.random() > 0.7) SynthAudio.playTypingBeep(); }
         })
         .to(DOM.intro.subtitle, {
-            duration: 4,
-            text: "في هذه الليلة...\nهناك شيء بسيط...\nلكنه من كل قلبي ❤️",
+            duration: 3.5,
+            text: "في هذه الليلة الوردية...\nهناك أمنية جميلة تنتظركِ...\nمن كل قلبي 🌸",
             ease: "none",
             onUpdate: () => { if(Math.random() > 0.7) SynthAudio.playTypingBeep(); }
-        }, "+=0.5")
+        }, "+=0.4")
         .to(DOM.buttons.open, {
             opacity: 1,
             pointerEvents: 'auto',
             y: 0,
             duration: 1,
             ease: "back.out(1.7)"
-        }, "+=0.5");
+        }, "+=0.4");
     };
 
     gsap.set(DOM.buttons.open, { y: 20 });
@@ -319,12 +322,9 @@ document.addEventListener("DOMContentLoaded", () => {
         switchScene(DOM.scenes.intro, DOM.scenes.cake, initCakeScene);
     });
 
-    /* ==================================================
-       CAKE & MIC DETECTION
-    ================================================== */
     const initCakeScene = () => {
         gsap.from(".cake-stage", { y: 100, opacity: 0, duration: 1.5, ease: "elastic.out(1, 0.5)" });
-        gsap.from(".instruction-box", { y: -50, opacity: 0, duration: 1, delay: 0.5, ease: "power2.out" });
+        gsap.from(".instruction-box", { y: -50, opacity: 0, duration: 1, delay: 0.4, ease: "power2.out" });
         setupMicrophone();
 
         DOM.cake.candles.forEach(candle => {
@@ -352,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
             appState.micActive = true;
             listenForBlow();
         } catch (err) {
-            document.querySelector('.mic-hint').innerText = "اضغط على الشموع لإطفائها";
+            document.querySelector('.mic-hint').innerText = "اضغطي على الشموع لإطفائها";
         }
     };
 
@@ -388,31 +388,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 cancelAnimationFrame(checkMicFrame);
                 if(microphone) microphone.disconnect();
             }
-            setTimeout(triggerCelebration, 1500);
+            setTimeout(triggerCelebration, 1200);
         }
     };
 
+    // Massive Celebration with Camera Shake, Fireworks, Rose Petals & Confetti
     const triggerCelebration = () => {
+        document.body.classList.add('shake-screen');
+        setTimeout(() => document.body.classList.remove('shake-screen'), 600);
+
         const tl = gsap.timeline();
         tl.to(DOM.flash, { opacity: 1, duration: 0.1 })
           .set(DOM.scenes.cake, { className: "scene" })
           .to(DOM.flash, { opacity: 0, duration: 1.5, ease: "power2.out" })
           .call(() => {
-              launchHeavyConfetti();
+              launchFloralCelebration();
               setTimeout(() => {
                   switchScene(document.createElement('div'), DOM.scenes.message, initMessageScene);
-              }, 4000);
+              }, 4500);
           });
     };
 
-    const launchHeavyConfetti = () => {
+    const launchFloralCelebration = () => {
         const duration = 5000;
         const end = Date.now() + duration;
-        const colors = ['#d4af37', '#e6a8d7', '#b76e79', '#ff2a5f', '#ffffff'];
+        const colors = ['#ff758c', '#ffb199', '#e8a5c8', '#ffffff', '#ffd1dc'];
 
         (function frame() {
-            confetti({ particleCount: 8, angle: 60, spread: 55, origin: { x: 0 }, colors: colors, zIndex: 100 });
-            confetti({ particleCount: 8, angle: 120, spread: 55, origin: { x: 1 }, colors: colors, zIndex: 100 });
+            confetti({ particleCount: 10, angle: 60, spread: 60, origin: { x: 0 }, colors: colors, zIndex: 100 });
+            confetti({ particleCount: 10, angle: 120, spread: 60, origin: { x: 1 }, colors: colors, zIndex: 100 });
             if (Date.now() < end) requestAnimationFrame(frame);
         }());
     };
@@ -427,31 +431,18 @@ document.addEventListener("DOMContentLoaded", () => {
             y: 0,
             opacity: 1,
             duration: 0.8,
-            stagger: 0.8,
+            stagger: 0.6,
             ease: "power2.out",
             onComplete: () => {
-                gsap.to(DOM.buttons.toGallery, { opacity: 1, pointerEvents: 'auto', y: 0, duration: 1 });
+                gsap.to(DOM.buttons.toFinal, { opacity: 1, pointerEvents: 'auto', y: 0, duration: 1 });
             }
         });
     };
 
-    gsap.set(DOM.buttons.toGallery, { y: 20 });
-    DOM.buttons.toGallery.addEventListener('click', () => {
-        SynthAudio.playClick();
-        switchScene(DOM.scenes.message, DOM.scenes.gallery, initGalleryScene);
-    });
-
-    const initGalleryScene = () => {
-        const cards = document.querySelectorAll('.gallery-card');
-        gsap.from(".gallery-title", { y: -30, opacity: 0, duration: 1, ease: "power2.out" });
-        gsap.to(cards, { opacity: 1, y: 0, rotationX: 0, rotationY: 0, duration: 1, stagger: 0.2, ease: "back.out(1.5)" });
-    };
-
-    gsap.set('.gallery-card', { y: 50, rotationX: 10, rotationY: 10 });
-
+    gsap.set(DOM.buttons.toFinal, { y: 20 });
     DOM.buttons.toFinal.addEventListener('click', () => {
         SynthAudio.playClick();
-        switchScene(DOM.scenes.gallery, DOM.scenes.final, initFinalScene);
+        switchScene(DOM.scenes.message, DOM.scenes.final, initFinalScene);
     });
 
     const initFinalScene = () => {
@@ -461,25 +452,25 @@ document.addEventListener("DOMContentLoaded", () => {
             { scale: 1, opacity: 1, rotation: 0, duration: 1.5, ease: "elastic.out(1, 0.4)" }
         );
         gsap.fromTo(DOM.buttons.restart, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, delay: 1 });
-        launchInfiniteConfetti();
+        launchInfiniteFloralRain();
     };
 
     let infiniteConfettiInterval;
-    const launchInfiniteConfetti = () => {
-        const colors = ['#ff2a5f', '#e6a8d7', '#ffffff'];
+    const launchInfiniteFloralRain = () => {
+        const colors = ['#ff758c', '#ffb199', '#ffffff', '#ffd1dc'];
         infiniteConfettiInterval = setInterval(() => {
             confetti({
-                particleCount: 2,
+                particleCount: 3,
                 angle: 90,
                 spread: 360,
                 origin: { x: Math.random(), y: -0.1 },
                 colors: colors,
-                ticks: 300,
-                gravity: 0.5,
-                scalar: Math.random() * 0.5 + 0.5,
+                ticks: 350,
+                gravity: 0.45,
+                scalar: Math.random() * 0.6 + 0.6,
                 shapes: ['circle']
             });
-        }, 200);
+        }, 220);
     };
 
     DOM.buttons.restart.addEventListener('click', () => {
