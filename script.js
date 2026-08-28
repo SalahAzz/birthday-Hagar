@@ -204,7 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
             this.rotSpeed = Math.random() * 2 - 1;
             this.alpha = Math.random() * 0.7 + 0.3;
             this.type = Math.random() > 0.4 ? 'petal' : (Math.random() > 0.5 ? 'sparkle' : 'heart');
-            this.color = ['#ffb199', '#ff758c', '#ffd1dc', '#ffffff', '#e8a5c8'][Math.floor(Math.random() * 5)];
+            // Custom Palette: Powder Pink, Warm Pink, Baby Blue, Soft Lavender, Butter Yellow, White
+            this.color = ['#ffb7c5', '#f472b6', '#a5f3fc', '#c4b5fd', '#fef08a', '#ffffff'][Math.floor(Math.random() * 6)];
         }
         update(speedMult = 1) {
             this.y -= this.speedY * speedMult;
@@ -287,19 +288,19 @@ document.addEventListener("DOMContentLoaded", () => {
           .to(to, { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" }, "+=0.1");
     };
 
-    // Intro Typing Animation
+    // Intro Typing Animation (Modified to Hagar)
     const playIntro = () => {
         const tl = gsap.timeline();
 
         tl.to(DOM.intro.title, {
             duration: 2.2,
-            text: "لدي مفاجأة ساحرة لكِ يا ندى...",
+            text: "عندي ليكي مفاجأة مميزة يا هاجر...",
             ease: "none",
             onUpdate: () => { if(Math.random() > 0.7) SynthAudio.playTypingBeep(); }
         })
         .to(DOM.intro.subtitle, {
             duration: 3.5,
-            text: "في هذه الليلة الوردية...\nهناك أمنية جميلة تنتظركِ...\nمن كل قلبي 🌸",
+            text: "في اليوم الحلو ده...\nفي أمنية وفرحة مستنياكي...\nمن كل قلبي ✨🌸",
             ease: "none",
             onUpdate: () => { if(Math.random() > 0.7) SynthAudio.playTypingBeep(); }
         }, "+=0.4")
@@ -392,7 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Massive Celebration with Camera Shake, Fireworks, Rose Petals & Confetti
+    // Massive Celebration with Camera Shake, Fireworks, Pastel Confetti
     const triggerCelebration = () => {
         document.body.classList.add('shake-screen');
         setTimeout(() => document.body.classList.remove('shake-screen'), 600);
@@ -412,7 +413,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const launchFloralCelebration = () => {
         const duration = 5000;
         const end = Date.now() + duration;
-        const colors = ['#ff758c', '#ffb199', '#e8a5c8', '#ffffff', '#ffd1dc'];
+        // Confetti colors: Pink, Baby Blue, Lavender, Butter Yellow, White
+        const colors = ['#ffb7c5', '#f472b6', '#a5f3fc', '#c4b5fd', '#fef08a', '#ffffff'];
 
         (function frame() {
             confetti({ particleCount: 10, angle: 60, spread: 60, origin: { x: 0 }, colors: colors, zIndex: 100 });
@@ -457,7 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let infiniteConfettiInterval;
     const launchInfiniteFloralRain = () => {
-        const colors = ['#ff758c', '#ffb199', '#ffffff', '#ffd1dc'];
+        const colors = ['#ffb7c5', '#f472b6', '#a5f3fc', '#c4b5fd', '#fef08a', '#ffffff'];
         infiniteConfettiInterval = setInterval(() => {
             confetti({
                 particleCount: 3,
